@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>梦想"职"引｜如果可以，把成长问给彼此</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #fafaf8; font-family: -apple-system, sans-serif; }
+
+.scene {
+  position: relative; width: 100%; max-width: 600px;
+  height: 100vh; max-height: 700px;
+  margin: 0 auto; overflow: hidden; background: #fafaf8;
+}
+
+.ttl { position: absolute; top: 5%; left: 0; right: 0; text-align: center; z-index: 3; }
+.ttl-m { font-size: 15px; font-weight: 400; color: #1a1a1a; letter-spacing: 0.06em; }
+.ttl-s { font-size: 10px; color: #aaa; margin-top: 6px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* 涟漪容器 */
+.ripple-container {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1; overflow: hidden;
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid #aaa;
+  transform: scale(0);
+  opacity: 0.5;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  0%   { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(8); opacity: 0; }
+}
+.ripple.go { animation: rippleAnim 2s ease-out forwards; }
+
+.dot-wrap {
+  position: absolute; border-radius: 50%; cursor: pointer;
+  transform: translate(-50%, -50%); z-index: 4;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-user-select: none; user-select: none;
+}
+.dot-inner {
+  width: 100%; height: 100%; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 2px;
+}
+.dot-year { font-size: 12px; font-weight: 500; }
+.dot-sub { font-size: 9px; }
+
+.lb {
+  display: none; position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: rgba(0,0,0,0.5);
+  align-items: center; justify-content: center;
+}
+.lb.on { display: flex; }
+.lbi {
+  width: 82%; max-width: 380px; background: #fff; border-radius: 16px; overflow: hidden;
+}
+.lbimg {
+  width: 100%; height: 320px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+}
+.lbtxt { font-size: 12px; text-align: center; line-height: 1.8; }
+.lbft {
+  padding: 14px 16px; border-top: 0.5px solid #eee;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.lbnm { font-size: 11px; color: #aaa; }
+.lbcl { font-size: 11px; color: #666; padding: 10px; cursor: pointer; }
+
+.hint { position: absolute; bottom: 4%; left: 0; right: 0; text-align: center; font-size: 11px; color: #ccc; pointer-events: none; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+
+  <div class="ripple-container" id="rippleContainer"></div>
+
+  <div class="ttl">
+    <p class="ttl-m">如果可以，把成长问给彼此</p>
+    <p class="ttl-s">LVMH Retail Management Trainee</p>
+  </div>
+
+  <div class="dot-wrap" id="dot22" style="left:35%;top:25%;width:80px;height:80px;"
+       ontouchstart="openLb(22,this)" onclick="openLb(22,this)">
+    <div class="dot-inner" style="background:#EEEDFE;border:0.5px solid #AFA9EC;">
+      <span class="dot-year" style="color:#3C3489;">2022</span>
+      <span class="dot-sub" style="color:#534AB7;">届</span>
+    </div>
+  </div>
+
+  <div class="dot-wrap" id="dot24" style="left:58%;top:52%;width:64px;height:64px;"
+       ontouchstart="openLb(24,this)" onclick="openLb(24,this)">
+    <div class="dot-inner" style="background:#E1F5EE;border:0.5px solid #5DCAA5;">
+      <span class="dot-year" style="color:#085041;">2024</span>
+      <span class="dot-sub" style="color:#0F6E56;">届</span>
+    </div>
+  </div>
+
+  <div class="dot-wrap" id="dot26" style="left:38%;top:76%;width:50px;height:50px;"
+       ontouchstart="openLb(26,this)" onclick="openLb(26,this)">
+    <div class="dot-inner" style="background:#FAECE7;border:0.5px solid #F0997B;">
+      <span class="dot-year" style="color:#712B13;">2026</span>
+      <span class="dot-sub" style="color:#993C1D;">届</span>
+    </div>
+  </div>
+
+  <div class="lb" id="lb22">
+    <div class="lbi">
+      <div class="lbimg" style="background:#EEEDFE;">
+        <p class="lbtxt" style="color:#534AB7;">2022届<br>Hannah YU & Sunny YU<br>Tiffany & Co. · RIMOWA<br><br>完整内容长图<br>圆桌后替换</p>
+      </div>
+      <div class="lbft">
+        <span class="lbnm">Hannah YU & Sunny YU</span>
+        <span class="lbcl" ontouchstart="closeLb('lb22')" onclick="closeLb('lb22')">× 关闭</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lb" id="lb24">
+    <div class="lbi">
+      <div class="lbimg" style="background:#E1F5EE;">
+        <p class="lbtxt" style="color:#085041;">2024届<br>Jeannette WU & Shirley LI<br>Loro Piana · Louis Vuitton<br><br>完整内容长图<br>圆桌后替换</p>
+      </div>
+      <div class="lbft">
+        <span class="lbnm">Jeannette WU & Shirley LI</span>
+        <span class="lbcl" ontouchstart="closeLb('lb24')" onclick="closeLb('lb24')">× 关闭</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lb" id="lb26">
+    <div class="lbi">
+      <div class="lbimg" style="background:#FAECE7;">
+        <p class="lbtxt" style="color:#993C1D;">2026届<br>Cheng HU & Fayla CHEN<br>Hublot · Dior<br><br>完整内容长图<br>圆桌后替换</p>
+      </div>
+      <div class="lbft">
+        <span class="lbnm">Cheng HU & Fayla CHEN</span>
+        <span class="lbcl" ontouchstart="closeLb('lb26')" onclick="closeLb('lb26')">× 关闭</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint">触碰水面，听见回响</p>
+</div>
+
+<script>
+var colors = { 22: '#AFA9EC', 24: '#5DCAA5', 26: '#F0997B' };
+
+function fireRipple(el, color) {
+  var scene = document.getElementById('scene');
+  var container = document.getElementById('rippleContainer');
+  var rect = el.getBoundingClientRect();
+  var sceneRect = scene.getBoundingClientRect();
+  var cx = rect.left + rect.width / 2 - sceneRect.left;
+  var cy = rect.top + rect.height / 2 - sceneRect.top;
+  var size = 60;
+
+  for (var i = 0; i < 4; i++) {
+    (function(delay) {
+      setTimeout(function() {
+        var r = document.createElement('div');
+        r.className = 'ripple';
+        r.style.width = size + 'px';
+        r.style.height = size + 'px';
+        r.style.left = (cx - size/2) + 'px';
+        r.style.top = (cy - size/2) + 'px';
+        r.style.borderColor = color;
+        container.appendChild(r);
+        void r.offsetWidth;
+        r.classList.add('go');
+        setTimeout(function() { r.parentNode && r.parentNode.removeChild(r); }, 2200);
+      }, delay);
+    })(i * 220);
+  }
+}
+
+var allLbs = ['lb22','lb24','lb26'];
+var opened = false;
+
+function openLb(year, el) {
+  if (opened) return;
+  opened = true;
+  fireRipple(el, colors[year]);
+  setTimeout(function() {
+    allLbs.forEach(function(id){ document.getElementById(id).classList.remove('on'); });
+    document.getElementById('lb' + year).classList.add('on');
+    opened = false;
+  }, 700);
+}
+
+function closeLb(id) {
+  document.getElementById(id).classList.remove('on');
+}
+</script>
+</body>
+</html>
