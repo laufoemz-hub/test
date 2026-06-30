@@ -1,0 +1,185 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap');
+
+.call-row {
+  display: flex;
+  gap: 4px;
+  max-width: 360px;
+  height: 220px;
+  margin: 0 auto;
+  background: #000;
+  border-radius: 14px;
+  padding: 4px;
+  overflow: hidden;
+}
+.tile {
+  position: relative;
+  flex: 1 1 0;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: flex-grow 0.45s cubic-bezier(0.4,0,0.2,1),
+              flex-basis 0.45s cubic-bezier(0.4,0,0.2,1),
+              opacity 0.3s ease;
+}
+.tile.active { flex-grow: 6; }
+.tile.shrink { flex-grow: 0.25; opacity: 0.5; }
+
+.tile-portrait {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.tile.active .tile-portrait { justify-content: flex-start; padding-left: 1.5rem; }
+.portrait-icon { font-size: 28px; opacity: 0.35; }
+
+.tile-name {
+  position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+  font-size: 9px; color: #fff; white-space: nowrap;
+  background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 10px;
+  z-index: 2;
+}
+.tile.active .tile-name { display: none; }
+
+.tile-content {
+  position: absolute; inset: 0; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: flex-end; justify-content: center;
+  padding: 1rem 1.2rem; text-align: right;
+  opacity: 0;
+  transition: opacity 0.3s 0.25s;
+}
+.tile.active .tile-content { opacity: 1; }
+
+.handwritten-tag {
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.tile-quote {
+  font-size: 11px; color: rgba(0,0,0,0.7); font-style: italic;
+  line-height: 1.6; max-width: 200px;
+}
+
+.panel {
+  max-width: 360px; margin: 0 auto;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease 0.25s;
+  background: var(--surface-1);
+  border-radius: 0 0 14px 14px;
+}
+.panel.open { max-height: 400px; }
+.panel-inner { padding: 1rem; }
+.panel-tag { font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 6px; }
+.panel-name { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+.panel-role { font-size: 11px; color: var(--text-secondary); margin-bottom: 10px; }
+.panel-quote {
+  font-size: 12px; color: var(--text-primary); font-style: italic;
+  line-height: 1.7; padding: 8px 10px; background: var(--surface-2);
+  border-radius: 8px; margin-bottom: 10px;
+}
+.panel-body { font-size: 12px; color: var(--text-secondary); line-height: 1.7; }
+</style>
+
+<h2 class="sr-only">三位卓艺大师以视频通话窗口呈现，人像居左，放大后手写体标签和金句在右侧浮现，下方展开完整访谈</h2>
+
+<div class="call-row" id="row">
+  <div class="tile" id="t-hugo" style="background:var(--c-purple-50,#EEEDFE);" onclick="open_('hugo')">
+    <div class="tile-portrait"><i class="ti ti-user" style="color:var(--c-purple-600,#534AB7);" aria-hidden="true"></i></div>
+    <p class="tile-name">Hugo</p>
+    <div class="tile-content">
+      <p class="handwritten-tag" style="color:var(--c-purple-800,#3C3489);">#人际的艺术</p>
+      <p class="tile-quote">"当你放下要完成什么的执念，关系自然会带你走得更远。"</p>
+    </div>
+  </div>
+  <div class="tile" id="t-amura" style="background:var(--c-teal-50,#E1F5EE);" onclick="open_('amura')">
+    <div class="tile-portrait"><i class="ti ti-user" style="color:var(--c-teal-600,#0F6E56);" aria-hidden="true"></i></div>
+    <p class="tile-name">Amura</p>
+    <div class="tile-content">
+      <p class="handwritten-tag" style="color:var(--c-teal-800,#085041);">#无声的懂得</p>
+      <p class="tile-quote">"读懂未曾出口的期待，是我们给予客人最深层的理解。"</p>
+    </div>
+  </div>
+  <div class="tile" id="t-aki" style="background:var(--c-coral-50,#FAECE7);" onclick="open_('aki')">
+    <div class="tile-portrait"><i class="ti ti-user" style="color:var(--c-coral-600,#993C1D);" aria-hidden="true"></i></div>
+    <p class="tile-name">Aki</p>
+    <div class="tile-content">
+      <p class="handwritten-tag" style="color:var(--c-coral-800,#712B13);">#从好奇心出发</p>
+      <p class="tile-quote">"你越走进一个人的世界，你给出的才越接近他想要的。"</p>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel">
+  <div class="panel-inner">
+    <p class="panel-tag" id="p-tag"></p>
+    <p class="panel-name" id="p-name"></p>
+    <p class="panel-role" id="p-role"></p>
+    <p class="panel-quote" id="p-quote"></p>
+    <p class="panel-body" id="p-body"></p>
+  </div>
+</div>
+
+<script>
+var data = {
+  hugo: {
+    tag: '#人际的艺术',
+    name: 'Hugo',
+    role: '路易威登 私人客户经理',
+    quote: '"当你放下要完成什么的执念，关系自然会带你走得更远。"',
+    body: '从导游到精品零售，探索与分享美好是Hugo不变的底色。比起单次成交，他更看重一段关系的深远维系，总是先打开自己，分享衣食住行，也讨论人生选择。'
+  },
+  amura: {
+    tag: '#无声的懂得',
+    name: 'Amura',
+    role: 'Loro Piana 北京SKP门店总监',
+    quote: '"读懂未曾出口的期待，是我们给予客人最深层的理解。"',
+    body: '自2014年加入Loro Piana，Amura在与各类珍贵纤维的长期接触中，将光线、温度、陈列节奏一一校准，让客人在感官沉浸中感受非凡质地。'
+  },
+  aki: {
+    tag: '#从好奇心出发',
+    name: 'Aki LEE',
+    role: '纪梵希 助理门店经理',
+    quote: '"你越走进一个人的世界，你给出的才越接近他想要的。"',
+    body: '艺术专业出身的Aki，以先客人再商品的理念注入温度。星座、生肖，甚至包上的挂件，都能成为开启对话的契机。'
+  }
+};
+
+var current = null;
+var ids = ['hugo','amura','aki'];
+
+function open_(id) {
+  var panel = document.getElementById('panel');
+
+  if (current === id) {
+    ids.forEach(function(i){
+      document.getElementById('t-' + i).classList.remove('active', 'shrink');
+    });
+    panel.classList.remove('open');
+    current = null;
+    return;
+  }
+
+  current = id;
+  ids.forEach(function(i){
+    var t = document.getElementById('t-' + i);
+    if (i === id) {
+      t.classList.remove('shrink');
+      t.classList.add('active');
+    } else {
+      t.classList.remove('active');
+      t.classList.add('shrink');
+    }
+  });
+
+  var d = data[id];
+  document.getElementById('p-tag').textContent = d.tag;
+  document.getElementById('p-name').textContent = d.name;
+  document.getElementById('p-role').textContent = d.role;
+  document.getElementById('p-quote').textContent = d.quote;
+  document.getElementById('p-body').textContent = d.body;
+  panel.classList.add('open');
+}
+</script>
