@@ -1,0 +1,171 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap');
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 3/4;
+  margin: 1.5rem auto;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 背景层 */
+.bg-layer {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: #E8E2D9;
+  transition: opacity 0.3s ease;
+}
+.bg-texture {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 2px,
+    rgba(180,165,145,0.15) 2px, rgba(180,165,145,0.15) 4px
+  );
+}
+.card.pressed .bg-layer { opacity: 0; }
+
+/* 白底层（抠图后的底） */
+.white-layer {
+  position: absolute; inset: 0;
+  background: #FAFAF8;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.card.pressed .white-layer { opacity: 1; }
+
+/* 人像占位 */
+.portrait {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 0;
+}
+.portrait-placeholder {
+  width: 65%;
+  height: 85%;
+  background: #C8BFB0;
+  border-radius: 2px 2px 0 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s;
+}
+.card.pressed .portrait-placeholder { background: #B0A898; }
+.portrait-icon { font-size: 48px; color: rgba(255,255,255,0.5); }
+
+/* 手写内容层 */
+.handwrite-layer {
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease 0.1s;
+  pointer-events: none;
+}
+.card.pressed .handwrite-layer { opacity: 1; }
+
+.hw-tag {
+  font-family: 'Caveat', cursive;
+  font-size: 28px; font-weight: 600;
+  color: #2C2416;
+  position: absolute;
+  top: 12%; right: 8%;
+  transform: rotate(3deg);
+}
+.hw-brand {
+  font-family: 'Caveat', cursive;
+  font-size: 14px; color: #6B5F50;
+  position: absolute;
+  top: 22%; left: 6%;
+  transform: rotate(-2deg);
+}
+.hw-quote {
+  font-family: 'Caveat', cursive;
+  font-size: 13px; color: #4A3F32;
+  position: absolute;
+  bottom: 28%; right: 6%;
+  max-width: 130px; text-align: right;
+  line-height: 1.4;
+  transform: rotate(1deg);
+}
+.hw-name {
+  font-family: 'Caveat', cursive;
+  font-size: 42px; font-weight: 600;
+  color: rgba(44,36,22,0.12);
+  position: absolute;
+  bottom: 8%; left: 4%;
+  letter-spacing: 0.05em;
+}
+.hw-dot1 {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #8B7355; opacity: 0.5;
+  position: absolute; top: 35%; left: 12%;
+}
+.hw-dot2 {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: #8B7355; opacity: 0.4;
+  position: absolute; top: 55%; right: 14%;
+}
+.hw-line {
+  position: absolute; top: 42%; left: 8%;
+  width: 40px; height: 0.5px;
+  background: #8B7355; opacity: 0.4;
+  transform: rotate(-15deg);
+}
+
+/* 提示 */
+.hint {
+  text-align: center; font-size: 11px; color: #aaa;
+  letter-spacing: 0.06em; padding-bottom: 1.5rem;
+}
+</style>
+
+<div class="card" id="card">
+  <div class="bg-layer">
+    <div class="bg-texture"></div>
+  </div>
+  <div class="white-layer"></div>
+  <div class="portrait">
+    <div class="portrait-placeholder">
+      <i class="ti ti-user portrait-icon" aria-hidden="true"></i>
+    </div>
+  </div>
+  <div class="handwrite-layer">
+    <p class="hw-tag">#人际的艺术</p>
+    <p class="hw-brand">路易威登</p>
+    <p class="hw-quote">"当你放下执念，关系自然会带你走得更远。"</p>
+    <p class="hw-name">Hugo</p>
+    <div class="hw-dot1"></div>
+    <div class="hw-dot2"></div>
+    <div class="hw-line"></div>
+  </div>
+</div>
+
+<p class="hint">长按感受</p>
+
+<script>
+var card = document.getElementById('card');
+var timer = null;
+
+function pressStart(e) {
+  e.preventDefault();
+  timer = setTimeout(function() {
+    card.classList.add('pressed');
+  }, 120);
+}
+
+function pressEnd(e) {
+  clearTimeout(timer);
+  card.classList.remove('pressed');
+}
+
+card.addEventListener('touchstart', pressStart, { passive: false });
+card.addEventListener('touchend', pressEnd);
+card.addEventListener('touchcancel', pressEnd);
+card.addEventListener('mousedown', pressStart);
+card.addEventListener('mouseup', pressEnd);
+card.addEventListener('mouseleave', pressEnd);
+</script>
